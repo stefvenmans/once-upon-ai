@@ -77,7 +77,7 @@ function App() {
 
     console.log(conversation_static.length)
     console.log(conversation_static)
-
+    setChatAnswer("")
     queryGPT(queryString, 500).then(resp => {
       // resp = resp.replace('Je zei tegen een persoon: ','')
       // resp = resp.replace('Je zegt tegen de persoon: ','')
@@ -91,8 +91,11 @@ function App() {
         resp = resp.split(':')[1]
         console.log(resp)
       }
-
-      conversation_static.push({q: resp, a: ""})
+      if(!resp){
+        conversation_static.push({q: "Ik ga nu een verhaaltje maken!", a: "..."})
+        onClick()
+      }
+      else conversation_static.push({q: resp, a: ""})
       
       // console.log(conversation_static)
       // console.log(conversation)
@@ -107,7 +110,7 @@ function App() {
   }
 
   const onClick = () => {
-    let queryString = "Maak een verhaal waarbij de gouden draak van gent en " + personName + " iets meemaken dat elementen gebruikt uit volgende gesprek. "
+    let queryString = "Maak een verhaal waarbij de gouden draak van gent en " + personName + " iets meemaken dat elementen gebruikt uit volgende gesprek. Start direct met het verhaal. "
     conversation_static.map((it) => {
       queryString += "Je zei tegen een persoon: " 
       queryString += it.q
@@ -144,6 +147,7 @@ function App() {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
+          value={chatAnswer}
           onChange={(e) => setChatAnswer(e.target.value)}
         >
         </input>
