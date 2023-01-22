@@ -1,25 +1,33 @@
 import { queries } from '@testing-library/react';
 import { useState } from 'react';
 import './App.css';
-import {openAI} from "./OpenAI.js"
+import {OpenAIApi, configuration} from "./OpenAI.js"
 import { PhotePage } from './PhotePage';
  
+let conversation_static = [{q: "Hoe gaat het?", a: ""}]
+
 function App() {
   const [chatResult, setChatResult] = useState([])
   const [chatAnswer, setChatAnswer] = useState('')
+  const [story, setStory] = useState('')
 
   let index = 0
   const [conversation, setConversation] = useState([{q: "Hoe gaat het?", a: ""}])
-  let conversation_static = [{q: "Hoe gaat het?", a: ""}]
+  
+  console.log("component rerendered")
+
+
   let conversationContext = [{q: "Je vroeg aan een persoon: Hoe gaat het? De persoon antwoorde: ", a: "" }]
 
   const  queryGPT = async (query, tokens) => {
+
+    const openAI = new OpenAIApi(configuration);
     const res = await openAI.createCompletion({
         model: "text-davinci-003",
         prompt: query,
         max_tokens: tokens
       });
-    console.log(res.data.choices[0].text)
+    //console.log(res.data.choices[0].text)
     const res_string = res.data.choices[0].text
     
     return res_string
@@ -32,21 +40,64 @@ function App() {
     conversation.map((it) => {
       queryString += "Je zei tegen een persoon: " 
       queryString += it.q
-      queryString += "De persoon antwoorde: "
-      queryString += chatAnswer
+      queryString += "Waarop de persoon antwoorde: "
+      if(it.a == ""){
+        queryString += chatAnswer
+      }
+      else{
+        queryString += it.a
+      }
       queryString += "."
     })
     console.log(queryString)
     conversation_static[conversation_static.length-1].a = chatAnswer
-    const res = queryGPT(queryString, 100);
-    conversation_static.push({q: res, a: ""})
-    setConversation(conversation_static)
+
+    console.log(conversation_static.length)
+    console.log(conversation_static)
+
+    queryGPT(queryString, 100).then(resp => {
+      conversation_static.push({q: resp, a: ""})
+      console.log("resp: " + resp)
+      console.log(conversation_static)
+      console.log(conversation)
+      setConversation(conversation_static)
+
+      
+      
+      
+      
+      //console.log(conversation_static)
+    })
+    
+    //conversation_static.push({q: res, a: ""})
+    //setConversation(conversation_static)
+  }
+
+  const onClick = () => {
+    let queryString = ""
+    conversation.map((it) => {
+      queryString += "Je zei tegen een persoon: " 
+      queryString += it.q
+      queryString += "Waarop de persoon antwoorde: "
+      if(it.a == ""){
+        queryString += chatAnswer
+      }
+      else{
+        queryString += it.a
+      }
+      queryString += "."
+    })
+    console.log("queryString : " + queryString)
+    queryGPT(queryString, 300).then(resp => {
+      console.log("story: "+ resp)
+      setStory(resp)
+    })
   }
 
   return (
     <div className="App">
       <ul>
-        {conversation.map((it) => (
+        {conversation_static.map((it) => (
           <>
             <li>{"Q: " + it.q}</li>
             <li>{"A: " + it.a}</li>
@@ -65,6 +116,9 @@ function App() {
       </form>
 
       <PhotePage/>
+
+      <button onClick={onClick}>Maak een verhaal</button>
+      <p>{story}</p>
     </div>
   );
 }
