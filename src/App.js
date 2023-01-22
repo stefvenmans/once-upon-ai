@@ -2,20 +2,42 @@ import { queries } from '@testing-library/react';
 import { useState } from 'react';
 import './App.css';
 import {OpenAIApi, configuration} from "./OpenAI.js"
-import { PhotePage } from './PhotePage';
-// import { alterShowImages } from './PhotePage';
 
-let conversation_static = [{q: "Hoe gaat het?", a: ""}]
+let conversation_static = [{q: "Hey! Ik ben de Gentse Goude Draak! Wat is jouw naam?", a: ""}]
+let show_images = [false, false, false, false, false]
+let firstQuestion = true;
+let personName = ""
 
 function App() {
-  const image_objs = ['fiets', 'koffietas', 'telefoon', 'vaas', 'verkleedfeestje']
+  const image_objs = ['fiets', 'koffie', 'gsm', 'bloemen', 'feest']
   const [chatResult, setChatResult] = useState([])
   const [chatAnswer, setChatAnswer] = useState('')
   const [story, setStory] = useState('')
   const [newData, setNewData] = useState(false)
 
   let index = 0
-  const [conversation, setConversation] = useState([{q: "Hoe gaat het?", a: ""}])
+
+  
+
+  const width = 150
+  const height = 150
+
+  function alterShowImages(answer) {
+    for (let i = 0; i < image_objs.length; i++) {
+      console.log(image_objs[i])
+      console.log(answer.search(image_objs[i]))
+      if (!show_images[i] && answer.search(image_objs[i])>-1) {
+        show_images[i] = true
+        setNewData(!newData)
+        break
+      }
+    }
+    console.log(answer)
+    console.log(show_images)
+  }
+
+
+  const [conversation, setConversation] = useState([{q: "Hey! Ik ben de Gentse Goude Draak! Wat is jouw naam?", a: ""}])
   
   console.log("component rerendered")
 
@@ -38,7 +60,8 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault()
     setNewData(false);
-    let queryString = ""
+    let queryString = "We gaan een rollenspel doen waarij je een schattige goude draak bent die vragen stelt aan een persoon. "
+    
     conversation.map((it) => {
       queryString += "Je zei tegen een persoon: " 
       queryString += it.q
@@ -51,6 +74,7 @@ function App() {
       }
       queryString += "."
     })
+
     console.log(queryString)
     conversation_static[conversation_static.length-1].a = chatAnswer
 
@@ -58,12 +82,21 @@ function App() {
     console.log(conversation_static)
 
     queryGPT(queryString, 100).then(resp => {
+      resp = resp.replace('Je zei tegen een persoon: ','')
+      resp = resp.replace('Je zegt tegen de persoon: ','')
+      resp = resp.replace('Waarop de persoon antwoorde: ','')
+
       conversation_static.push({q: resp, a: ""})
-      console.log("resp: " + resp)
+      
       console.log(conversation_static)
       console.log(conversation)
+      alterShowImages(resp)
       setConversation(conversation_static)
       setNewData(true);
+      if(firstQuestion){
+        personName = chatAnswer
+        firstQuestion = false
+      }
       //setConversation(conversation_static)
       //console.log(conversation_static)
     })
@@ -73,7 +106,7 @@ function App() {
   }
 
   const onClick = () => {
-    let queryString = ""
+    let queryString = "Maak een verhaal van het volgende gesprek met als hoofdpersonage " + personName + "."
     conversation_static.map((it) => {
       queryString += "Je zei tegen een persoon: " 
       queryString += it.q
@@ -87,13 +120,15 @@ function App() {
       queryString += "."
     })
     console.log("queryString : " + queryString)
-    queryGPT("Maak een verhaal van het volgende gesprek." + queryString, 300).then(resp => {
+    queryGPT(queryString, 300).then(resp => {
       console.log("story: "+ resp)
       setStory(resp)
     })
   }
 
-  PhotePage.alterShowImages(chatAnswer)
+  const updatePhotos = () => {
+
+  }
 
   return (
     <div className="App">
@@ -115,11 +150,19 @@ function App() {
         </input>
         <button>Vraag</button>
       </form>
-      
-      <PhotePage items={image_objs}/>
 
       <button onClick={onClick}>Maak een verhaal</button>
       <p>{story}</p>
+
+      <div>
+      {show_images[0] && <img src={require('./images/'+ image_objs[0] +'.jpg')} width={width} height={height} alt="image not found"/>}
+      {show_images[1] && <img src={require('./images/'+ image_objs[1] +'.jpg')} width={width} height={height} alt="image not found"/>}
+      {show_images[2] && <img src={require('./images/'+ image_objs[2] +'.jpg')} width={width} height={height} alt="image not found"/>}
+      {show_images[3] && <img src={require('./images/'+ image_objs[3] +'.jpg')} width={width} height={height} alt="image not found"/>}
+      {show_images[4] && <img src={require('./images/'+ image_objs[4] +'.jpg')} width={width} height={height} alt="image not found"/>}
+    </div>
+
+
     </div>
   );
 }
