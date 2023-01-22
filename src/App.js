@@ -1,7 +1,8 @@
 import { queries } from '@testing-library/react';
 import { useState } from 'react';
 import './App.css';
-import {openai} from "./OpenAI.js"
+import {openAI} from "./OpenAI.js"
+import { PhotePage } from './PhotePage';
  
 function App() {
   const [chatResult, setChatResult] = useState([])
@@ -13,13 +14,14 @@ function App() {
   let conversationContext = [{q: "Je vroeg aan een persoon: Hoe gaat het? De persoon antwoorde: ", a: "" }]
 
   const  queryGPT = async (query, tokens) => {
-    const res = openai.createCompletion({
+    const res = await openAI.createCompletion({
         model: "text-davinci-003",
         prompt: query,
         max_tokens: tokens
       });
     console.log(res.data.choices[0].text)
-    const res_string = await res.data.choices[0].text
+    const res_string = res.data.choices[0].text
+    
     return res_string
   }
 
@@ -36,7 +38,7 @@ function App() {
     })
     console.log(queryString)
     conversation_static[conversation_static.length-1].a = chatAnswer
-    const res = queryGPT(queryString, 100).then(console.log(res));
+    const res = queryGPT(queryString, 100);
     conversation_static.push({q: res, a: ""})
     setConversation(conversation_static)
   }
@@ -61,6 +63,8 @@ function App() {
         </input>
         <button>Vraag</button>
       </form>
+
+      <PhotePage/>
     </div>
   );
 }
