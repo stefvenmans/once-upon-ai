@@ -9,6 +9,7 @@ let conversation_static = [{q: "Hoe gaat het?", a: ""}]
 function App() {
   const [chatResult, setChatResult] = useState([])
   const [chatAnswer, setChatAnswer] = useState('')
+  const image_objs = ['fiets', 'koffietas', 'telefoon', 'vaas', 'verkleedfeestje']
   const [story, setStory] = useState('')
   const [newData, setNewData] = useState(false)
 
@@ -96,6 +97,8 @@ function App() {
     })
   }
 
+  alterShowImages(chatAnswer)
+
   return (
     <div className="App">
       <ul>
@@ -116,8 +119,8 @@ function App() {
         </input>
         <button>Vraag</button>
       </form>
-
-      <PhotePage/>
+      
+      <PhotePage image_objs/>
 
       <button onClick={onClick}>Maak een verhaal</button>
       <p>{story}</p>
