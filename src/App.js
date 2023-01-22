@@ -10,6 +10,7 @@ function App() {
   const [chatResult, setChatResult] = useState([])
   const [chatAnswer, setChatAnswer] = useState('')
   const [story, setStory] = useState('')
+  const [newData, setNewData] = useState(false)
 
   let index = 0
   const [conversation, setConversation] = useState([{q: "Hoe gaat het?", a: ""}])
@@ -35,7 +36,7 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-
+    setNewData(false);
     let queryString = ""
     conversation.map((it) => {
       queryString += "Je zei tegen een persoon: " 
@@ -60,7 +61,8 @@ function App() {
       console.log("resp: " + resp)
       console.log(conversation_static)
       console.log(conversation)
-      setConversation(conversation_static)
+      setNewData(true);
+      //setConversation(conversation_static)
 
       
       
@@ -75,7 +77,7 @@ function App() {
 
   const onClick = () => {
     let queryString = ""
-    conversation.map((it) => {
+    conversation_static.map((it) => {
       queryString += "Je zei tegen een persoon: " 
       queryString += it.q
       queryString += "Waarop de persoon antwoorde: "
@@ -88,7 +90,7 @@ function App() {
       queryString += "."
     })
     console.log("queryString : " + queryString)
-    queryGPT(queryString, 300).then(resp => {
+    queryGPT("Maak een verhaal van het volgende gesprek." + queryString, 300).then(resp => {
       console.log("story: "+ resp)
       setStory(resp)
     })
