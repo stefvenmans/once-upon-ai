@@ -85,7 +85,11 @@ function App() {
       resp = resp.replace('Je zei tegen een persoon: ','')
       resp = resp.replace('Je zegt tegen de persoon: ','')
       resp = resp.replace('Waarop de persoon antwoorde: ','')
-
+      resp = resp.replace('Je zei tegen de persoon: ','')
+      resp = resp.replace('Je zei vervolgens tegen ' + personName + ':','')
+      resp = resp.replace('Je zei tegen ' + personName + ':','')
+      //Je zei tegen Reka:
+      // Je zei vervolgens tegen Bart: 
       conversation_static.push({q: resp, a: ""})
       
       console.log(conversation_static)
@@ -132,6 +136,7 @@ function App() {
 
   return (
     <div className="App">
+      <div className='chat-containter'>
       <ul>
         {conversation_static.map((it) => (
           <>
@@ -140,8 +145,8 @@ function App() {
           </>
         ))} 
       </ul>
-
-
+      </div>
+      <div className='chat-input-containter'>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -150,7 +155,8 @@ function App() {
         </input>
         <button>Vraag</button>
       </form>
-
+      </div>
+      <div className='story-containter'>
       <button onClick={onClick}>Maak een verhaal</button>
       <p>{story}</p>
 
@@ -160,6 +166,7 @@ function App() {
       {show_images[2] && <img src={require('./images/'+ image_objs[2] +'.jpg')} width={width} height={height} alt="image not found"/>}
       {show_images[3] && <img src={require('./images/'+ image_objs[3] +'.jpg')} width={width} height={height} alt="image not found"/>}
       {show_images[4] && <img src={require('./images/'+ image_objs[4] +'.jpg')} width={width} height={height} alt="image not found"/>}
+    </div>
     </div>
 
 
