@@ -1,4 +1,3 @@
-import { queries } from '@testing-library/react';
 import { useState } from 'react';
 import './App.css';
 import {OpenAIApi, configuration} from "./OpenAI.js"
@@ -16,8 +15,6 @@ function App() {
   const [newData, setNewData] = useState(false)
 
   let index = 0
-
-  
 
   const width = 150
   const height = 150
@@ -60,8 +57,8 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault()
     setNewData(false);
-    let queryString = "We gaan een rollenspel doen waarij je een schattige goude draak bent die vragen stelt aan een persoon. "
-    
+    let queryString = "We gaan een rollenspel doen waarij jij een schattige goude draak bent die vragen stelt aan een persoon. Je mag niet parafraseren. Je volgt de aangehouden structuur."
+
     conversation.map((it) => {
       queryString += "Je zei tegen een persoon: " 
       queryString += it.q
@@ -81,19 +78,24 @@ function App() {
     console.log(conversation_static.length)
     console.log(conversation_static)
 
-    queryGPT(queryString, 100).then(resp => {
-      resp = resp.replace('Je zei tegen een persoon: ','')
-      resp = resp.replace('Je zegt tegen de persoon: ','')
-      resp = resp.replace('Waarop de persoon antwoorde: ','')
-      resp = resp.replace('Je zei tegen de persoon: ','')
-      resp = resp.replace('Je zei vervolgens tegen ' + personName + ':','')
-      resp = resp.replace('Je zei tegen ' + personName + ':','')
-      //Je zei tegen Reka:
-      // Je zei vervolgens tegen Bart: 
+    queryGPT(queryString, 500).then(resp => {
+      // resp = resp.replace('Je zei tegen een persoon: ','')
+      // resp = resp.replace('Je zegt tegen de persoon: ','')
+      // resp = resp.replace('Je zegt tegen ' + personName + ': ','')
+      // resp = resp.replace('Waarop de persoon antwoorde: ','')
+
+      if (resp.search(':') > -1) {
+        // console.log("found ':'")
+        // alert("found ':'")
+        console.log(resp)
+        resp = resp.split(':')[1]
+        console.log(resp)
+      }
+
       conversation_static.push({q: resp, a: ""})
       
-      console.log(conversation_static)
-      console.log(conversation)
+      // console.log(conversation_static)
+      // console.log(conversation)
       alterShowImages(resp)
       setConversation(conversation_static)
       setNewData(true);
@@ -101,16 +103,11 @@ function App() {
         personName = chatAnswer
         firstQuestion = false
       }
-      //setConversation(conversation_static)
-      //console.log(conversation_static)
     })
-    
-    //conversation_static.push({q: res, a: ""})
-    //setConversation(conversation_static)
   }
 
   const onClick = () => {
-    let queryString = "Maak een verhaal van het volgende gesprek met als hoofdpersonage " + personName + "."
+    let queryString = "Maak een verhaal waarbij de gouden draak van gent en " + personName + " iets meemaken dat elementen gebruikt uit volgende gesprek. "
     conversation_static.map((it) => {
       queryString += "Je zei tegen een persoon: " 
       queryString += it.q
@@ -124,14 +121,10 @@ function App() {
       queryString += "."
     })
     console.log("queryString : " + queryString)
-    queryGPT(queryString, 300).then(resp => {
+    queryGPT(queryString, 500).then(resp => {
       console.log("story: "+ resp)
       setStory(resp)
     })
-  }
-
-  const updatePhotos = () => {
-
   }
 
   return (
@@ -147,6 +140,7 @@ function App() {
       </ul>
       </div>
       <div className='chat-input-containter'>
+
       <form onSubmit={handleSubmit}>
         <input
           type="text"
