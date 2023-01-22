@@ -3,20 +3,20 @@ import { useState } from 'react';
 import './App.css';
 import {OpenAIApi, configuration} from "./OpenAI.js"
 import { PhotePage } from './PhotePage';
- 
+// import { alterShowImages } from './PhotePage';
+
 let conversation_static = [{q: "Hoe gaat het?", a: ""}]
 
 function App() {
+  const image_objs = ['fiets', 'koffietas', 'telefoon', 'vaas', 'verkleedfeestje']
   const [chatResult, setChatResult] = useState([])
   const [chatAnswer, setChatAnswer] = useState('')
-  const image_objs = ['fiets', 'koffietas', 'telefoon', 'vaas', 'verkleedfeestje']
   const [story, setStory] = useState('')
 
   let index = 0
   const [conversation, setConversation] = useState([{q: "Hoe gaat het?", a: ""}])
   
   console.log("component rerendered")
-
 
   let conversationContext = [{q: "Je vroeg aan een persoon: Hoe gaat het? De persoon antwoorde: ", a: "" }]
 
@@ -62,10 +62,6 @@ function App() {
       console.log(conversation_static)
       console.log(conversation)
       setConversation(conversation_static)
-
-      
-      
-      
       
       //console.log(conversation_static)
     })
@@ -95,7 +91,7 @@ function App() {
     })
   }
 
-  alterShowImages(chatAnswer)
+  PhotePage.alterShowImages(chatAnswer)
 
   return (
     <div className="App">
@@ -118,7 +114,7 @@ function App() {
         <button>Vraag</button>
       </form>
       
-      <PhotePage image_objs/>
+      <PhotePage items={image_objs}/>
 
       <button onClick={onClick}>Maak een verhaal</button>
       <p>{story}</p>
