@@ -7,6 +7,7 @@ import { PhotePage } from './PhotePage';
 function App() {
   const [chatResult, setChatResult] = useState([])
   const [chatAnswer, setChatAnswer] = useState('')
+  const image_objs = ['fiets', 'koffietas', 'telefoon', 'vaas', 'verkleedfeestje']
 
   let index = 0
   const [conversation, setConversation] = useState([{q: "Hoe gaat het?", a: ""}])
@@ -43,6 +44,8 @@ function App() {
     setConversation(conversation_static)
   }
 
+  alterShowImages(chatAnswer)
+
   return (
     <div className="App">
       <ul>
@@ -63,8 +66,8 @@ function App() {
         </input>
         <button>Vraag</button>
       </form>
-
-      <PhotePage/>
+      
+      <PhotePage image_objs/>
     </div>
   );
 }
