@@ -1,0 +1,47 @@
+
+body, html, #root, .App  {
+    margin: 0;
+    height: 100%;
+    
+  }
+
+.App{
+    color: white;
+    display: flex; 
+    flex-direction: column;
+    align-content: center;
+    background-image: url("./images/draakje.png");
+    height: 100%;
+    font-size: 30px;
+}
+.chat-containter{
+    border-radius: 40px;
+    background-color: rgba(0, 0, 0, 0.64);
+    margin: 50px;
+}
+
+.chat-input-containter{
+    border-radius: 40px;
+    background-color: rgba(0, 0, 0, 0.64);
+    margin: 50px;
+    padding-left: 10%;
+    padding-bottom:0.5%;
+    align-content: center;
+}
+
+button{
+    font-size: 25px;
+}
+
+input{
+    width: 80%;
+    height: 30px;
+    font-size: 25px;
+}
+
+.story-containter{
+    border-radius: 40px;
+    background-color: rgba(0, 0, 0, 0.646);
+    margin: 50px;
+    padding: 30px;
+}
