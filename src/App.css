@@ -1,0 +1,30 @@
+
+body, html, #root, .App  {
+    margin: 0;
+    height: 100%;
+    
+  }
+
+.App{
+    color: white;
+    display: flex; 
+    flex-direction: column;
+    align-content: center;
+    background-image: url("./images/draakje.png");
+    height: 100%;
+}
+.chat-containter{
+    border-radius: 40px;
+    background-color: rgba(0, 0, 0, 0.64);
+    margin: 50px;
+}
+
+.chat-input-containter{
+    
+}
+
+.story-containter{
+    border-radius: 40px;
+    background-color: rgba(0, 0, 0, 0.646);
+    margin: 50px;
+}
