@@ -1,3 +1,10 @@
+# Setting up the openai connection
+
+1. Create an openai account (if not )
+2. Create an API key (can be done on openai website after loggin in, quick google search will help)
+3. go to src\OpenAI.js and fill in the api key in the variable apiKey
+4. done
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
